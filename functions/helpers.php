@@ -5,7 +5,7 @@
  * @return string The plugin version.
  */
 function psf_get_version() {
-  $plugin_data = get_plugin_data(PSF_PLUGIN_PATH . '/db_schenker.php');
+  $plugin_data = get_plugin_data(PSF_PLUGIN_PATH . 'register-psf.php');
   return $plugin_data['Version'];
 }
 
