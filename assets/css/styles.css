@@ -1,0 +1,186 @@
+.faqWrapper {
+  --border-radius: 10px;
+  --box-shadow: 0px 5px 6px 2px rgba(0, 0, 0, 0.05);
+  --text-clr-primary: #000;
+  --text-clr-secondary: #444;
+  --text-clr-link: #3c3c3c;
+  --text-clr-link-hover: #131313;
+  --background-clr-primary: #fff;
+  --background-clr-secondary: #fafafa;
+  --spacing: 10px;
+  margin-top: calc(3.5 * var(--spacing));
+  margin-bottom: calc(2 * var(--spacing));
+}
+
+.faqContent {
+  display: flex;
+  flex-direction: column;
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.faqContent h2 {
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--text-clr-primary);
+  text-align: center;
+  padding-top: var(--spacing);
+  padding-right: calc(0.5 * var(--spacing));
+  padding-left: calc(0.5 * var(--spacing));
+  padding-bottom: calc(2 * var(--spacing));
+  margin: 0;
+}
+
+.faqContent .faqEntity {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: solid 1px #d9d9d9;
+}
+.faqContent .faqEntity + .faqEntity {
+  border-top: 0;
+}
+.faqContent .faqEntity:first-of-type {
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+.faqContent .faqEntity:last-of-type {
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+.faqContent.singleQuestion .faqEntity {
+  border-radius: var(--border-radius);
+}
+
+.faqContent .faqQuestion {
+  position: relative;
+  isolation: isolate;
+  padding: calc(1.5 * var(--spacing));
+  cursor: pointer;
+  background-color: var(--background-clr-secondary);
+  transition: all 0.2s ease;
+}
+.faqQuestion.active {
+  background-color: var(--background-clr-primary);
+}
+
+.faqContent .faqQuestionText {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 26px;
+  color: var(--text-clr-primary);
+  padding-right: calc(1.5 * var(--spacing));
+  margin: 0;
+}
+
+.faqContent .accordionPlus {
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  top: 50%;
+  right: calc(1.5 * var(--spacing));
+  margin-top: -8px;
+  opacity: 0.3;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+  background: transparent;
+  outline: none;
+  transform-origin: center;
+}
+
+.faqContent .accordionPlus::before,
+.faqContent .accordionPlus::after {
+  content: '';
+  display: block;
+  position: absolute;
+  transition: 0.4s;
+  border-radius: 4px;
+  background: currentColor;
+  width: 16px;
+  height: 2px;
+  top: 7px;
+}
+.faqContent .accordionPlus::after {
+  transform: rotate(90deg);
+}
+
+.faqContent .faqQuestion:hover .accordionPlus {
+  opacity: 0.8;
+}
+.faqQuestion.active .accordionPlus {
+  transform: rotate(45deg);
+}
+
+.faqContent .faqAnswer {
+  box-sizing: border-box;
+  position: relative;
+  background: var(--background-clr-primary);
+  width: 100%;
+  height: 0;
+  overflow: hidden;
+  padding: 0 calc(1.5 * var(--spacing));
+  padding-bottom: 0;
+  transition: height 0.2s ease;
+}
+
+.faqContent .faqAnswerText {
+  position: relative;
+  height: auto;
+  top: -10px;
+  font-size: 17px;
+  color: var(--text-clr-secondary);
+  line-height: 1.3;
+  opacity: 0;
+  transition: top 0.2s ease 0.2s, opacity 0.3s ease 0.2s;
+}
+
+.faqContent .faqAnswerText a {
+  color: var(--text-clr-link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.faqContent .faqAnswerText a:hover {
+  color: var(--text-clr-link-hover);
+  text-decoration-thickness: 2px;
+  text-decoration-style: dotted;
+  text-decoration-skip-ink: none;
+}
+
+@media screen and (min-width: 728px) {
+  .faqWrapper {
+    --spacing: 20px;
+  }
+  .faqWrapper .faqContent {
+    /* padding-top: var(--spacing);
+    padding-right: calc(1.5 * var(--spacing));
+    padding-left: calc(1.5 * var(--spacing));
+    padding-top: calc(2 * var(--spacing));
+    padding-bottom: calc(1.5 * var(--spacing));
+    -webkit-box-shadow: var(--box-shadow);
+    box-shadow: var(--box-shadow);
+    background-color: var(--background-clr-primary);
+    border: 1px solid #efefef;
+    border-radius: calc(1.5 * var(--border-radius)); */
+    overflow: hidden;
+  }
+  .faqWrapper h2 {
+    font-size: 28px;
+  }
+  .faqWrapper .faqQuestion {
+    padding: var(--spacing);
+  }
+  .faqContent .accordionPlus {
+    right: var(--spacing);
+  }
+  .faqContent .faqQuestionText {
+    font-size: 22px;
+  }
+  .faqContent .faqAnswer {
+    padding: 0 var(--spacing);
+  }
+  .faqContent .faqAnswerText {
+    font-size: 18px;
+    text-align: justify;
+  }
+}
