@@ -1,0 +1,9 @@
+:root {
+  --spacing: 10px;
+  --border-radius: 4px;
+  --box-shadow: 0px 5px 6px 2px rgba(0, 0, 0, 0.05);
+  --clr-text-primary: #000;
+  --clr-text-secondary: #444;
+  --clr-text-link: #3c3c3c;
+  --clr-text-link-hover: #131313;
+}

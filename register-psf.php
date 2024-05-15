@@ -3,7 +3,7 @@
 /**
  * @wordpress-plugin
  * Plugin Name:       Page Specific FAQ
- * Description:       Enables FAQs on chosen pages.
+ * Description:       Enables FAQs on product categories and specified pages.
  * Version:           1.1.7
  * Author:            Viktor Borg
  * Author URI:        viktorborg.myportfolio.com
@@ -22,26 +22,56 @@ define('PSF_JS_PATH', untrailingslashit(plugin_dir_url(__FILE__)) . '/assets/js/
 define('PSF_IMAGES_PATH', untrailingslashit(plugin_dir_url(__FILE__)) . '/assets/images/');
 define('PSF_FUNCTIONS_PATH', untrailingslashit(plugin_dir_path(__FILE__)) . '/functions/');
 
+define('PSF_SETTINGS_GROUP', 'psf-settings-group');
+
 register_activation_hook(__FILE__, 'psf_activate');
 function psf_activate() {
   add_action('admin_menu', 'psf_menu');
 }
 
 /**
- * Disabled Pages
+ * Enabled pages
  */
-function get_psf_disabled_pages_array() {
-  return array_filter(explode(',', get_option('disabled_pages_array')));
+function psf_enabled_pages() {
+  return array_filter(explode(',', get_option('enabled_pages')));
 }
-function get_psf_disabled_on_current_page() {
-  $disabled_on_current_page = (!empty(get_psf_disabled_pages_array()) && in_array(get_the_ID(), get_psf_disabled_pages_array())
-  );
-  return $disabled_on_current_page;
+function psf_enabled_on_current_page() {
+  $enabled_on_current_page = (!empty(psf_enabled_pages()) && in_array(get_the_ID(), psf_enabled_pages()));
+  return $enabled_on_current_page;
 }
 
 /**
  * Enqueue scripts & styles
  */
+add_action('admin_enqueue_scripts', 'register_psf_admin_scrtips_styles', 20);
+function register_psf_admin_scrtips_styles() {
+  $screen = get_current_screen();
+
+  if ($screen->id == 'toplevel_page_psf-settings') {
+    wp_enqueue_style(
+      'psf-admin-styles',
+      PSF_CSS_PATH . '/admin-styles.css',
+      array(),
+      psf_get_version()
+    );
+  }
+
+  if ($screen->taxonomy == 'product_cat' || $screen->id == 'toplevel_page_psf-settings') {
+    wp_enqueue_script(
+      'psf-admin-scripts',
+      PSF_JS_PATH . '/admin-psf-scripts.js',
+      array('jquery'),
+      psf_get_version()
+    );
+    wp_enqueue_style(
+      'psf-admin-styles',
+      PSF_CSS_PATH . '/admin-psf-styles.css',
+      array(),
+      psf_get_version()
+    );
+  }
+}
+
 add_action('wp_enqueue_scripts', 'register_psf_scripts_styles');
 function register_psf_scripts_styles() {
   wp_enqueue_style(
@@ -50,10 +80,12 @@ function register_psf_scripts_styles() {
     array(),
     psf_get_version()
   );
-  wp_enqueue_style('psf-styles');
 
-  $disabled_on_current_page = get_psf_disabled_on_current_page();
+  $enabled_on_current_page = psf_enabled_on_current_page();
+
+  $disabled_on_current_page = false;
   $script_params = array(
+    'enabled_on_current_page'       => $enabled_on_current_page,
     'disabled_on_current_page'      => $disabled_on_current_page,
     'disabled_pages_array'          => get_psf_disabled_pages_array(),
     'id'                            => get_the_ID(),
@@ -62,13 +94,6 @@ function register_psf_scripts_styles() {
   wp_register_script(
     'psf-scripts',
     PSF_JS_PATH . '/scripts.js',
-    array('jquery'),
-    psf_get_version()
-  );
-
-  wp_enqueue_script(
-    'psf-dynamic-fields',
-    PSF_JS_PATH . '/faq-dynamic-fields.js',
     array('jquery'),
     psf_get_version()
   );
@@ -82,7 +107,7 @@ function psf_menu() {
   $page_title   = 'Settings';
   $menu_title   = 'Page Specific FAQ';
   $capability   = 'manage_options';
-  $menu_slug    = 'page-specific-faq-settings';
+  $menu_slug    = 'psf-settings';
   $page_markup  = 'page_specific_faq_settings_page';
   $icon_url     = 'data:image/svg+xml;base64,' . base64_encode(file_get_contents(PSF_IMAGES_PATH . '/faqs.svg'));
   $position     = '3';
