@@ -13,7 +13,7 @@ jQuery(document).ready(function ($) {
     return false;
   });
 
-  $('.remove-row').on('click', function () {
+  $('#repeatable-tbody').on('click', '.remove-row', function () {
     $(this).parent().parent().remove();
     var currentLength = $('#repeatable-tbody')[0].children.length;
     if (currentLength == 2) {
@@ -40,8 +40,6 @@ jQuery(document).ready(function ($) {
       }
 
       $(currentPagesEl).attr('value', enabledPages.join(','));
-
-      console.log('enabledPages: ', enabledPages);
     },
   );
 });

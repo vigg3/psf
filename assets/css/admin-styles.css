@@ -1,3 +1,16 @@
+.form-field .button-wrapper {
+  text-align: right;
+}
+
+.form-field textarea,
+.form-field input[type='text'] {
+  width: 100%;
+}
+
+.form-field .inner-table {
+  border-spacing: 0;
+}
+
 .inner-table tr > td {
   padding-left: 0;
   padding-right: 0;
@@ -117,4 +130,27 @@ td .faqAnswer {
 }
 .psf-settings__wrapper .checkbox_wrapper label span:last-of-type {
   color: #585858;
+}
+
+tr.faqWrapper {
+  display: block;
+  box-sizing: border-box;
+  min-width: 532px;
+}
+
+/* PAGES */
+
+#psf_page_meta_box .form-field th {
+  width: 200px;
+  vertical-align: top;
+  text-align: left;
+}
+
+#psf_page_meta_box .form-field input {
+  /* width: 100%; */
+}
+
+#psf_page_meta_box .form-field .description {
+  max-width: 100%;
+  padding: 2px 8px 0;
 }

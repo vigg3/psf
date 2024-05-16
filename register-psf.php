@@ -4,7 +4,7 @@
  * @wordpress-plugin
  * Plugin Name:       Page Specific FAQ
  * Description:       Enables FAQs on product categories and specified pages.
- * Version:           1.1.7
+ * Version:           1.1.81
  * Author:            Viktor Borg
  * Author URI:        viktorborg.myportfolio.com
  * License:           GPL-2.0+
@@ -43,9 +43,20 @@ function psf_enabled_on_current_page() {
 /**
  * Enqueue scripts & styles
  */
-add_action('admin_enqueue_scripts', 'register_psf_admin_scrtips_styles', 20);
-function register_psf_admin_scrtips_styles() {
+add_action('admin_enqueue_scripts', 'register_psf_admin_scripts_styles', 20);
+function register_psf_admin_scripts_styles() {
   $screen = get_current_screen();
+  $enabled_on_admin_page = false;
+
+  print_r($screen->id);
+
+  if ($screen->id === 'page') {
+    global $post;
+    $page_id = $post->ID;
+
+    $enabled_pages = psf_enabled_pages();
+    $enabled_on_admin_page = (!empty($enabled_pages) && in_array($page_id, $enabled_pages));
+  }
 
   if ($screen->id == 'toplevel_page_psf-settings') {
     wp_enqueue_style(
@@ -56,7 +67,7 @@ function register_psf_admin_scrtips_styles() {
     );
   }
 
-  if ($screen->taxonomy == 'product_cat' || $screen->id == 'toplevel_page_psf-settings') {
+  if ($screen->taxonomy == 'product_cat' || $screen->id == 'toplevel_page_psf-settings' || $enabled_on_admin_page) {
     wp_enqueue_script(
       'psf-admin-scripts',
       PSF_JS_PATH . '/admin-psf-scripts.js',
@@ -65,7 +76,7 @@ function register_psf_admin_scrtips_styles() {
     );
     wp_enqueue_style(
       'psf-admin-styles',
-      PSF_CSS_PATH . '/admin-psf-styles.css',
+      PSF_CSS_PATH . '/admin-styles.css',
       array(),
       psf_get_version()
     );
@@ -87,7 +98,6 @@ function register_psf_scripts_styles() {
   $script_params = array(
     'enabled_on_current_page'       => $enabled_on_current_page,
     'disabled_on_current_page'      => $disabled_on_current_page,
-    'disabled_pages_array'          => get_psf_disabled_pages_array(),
     'id'                            => get_the_ID(),
   );
 
