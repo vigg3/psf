@@ -56,7 +56,10 @@ function psf_generate_faq_rows($psf_faqs) {
               </div>
             </td>
             <td class="button-wrapper" width="15%">
-              <a class="button remove-row" href="#">Ta bort</a>
+              <?php
+              if ($key > 0) { ?>
+                <a class="button remove-row" href="#">Ta bort</a>
+              <?php } ?>
             </td>
           </tr>
         <?php

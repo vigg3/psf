@@ -1,3 +1,6 @@
+.inner-table {
+  --top-spacing: 1.4rem;
+}
 .form-field .button-wrapper {
   text-align: right;
 }
@@ -39,7 +42,7 @@ td .faqAnswer {
 }
 
 .inner-table .button-wrapper {
-  padding-top: 1.4rem;
+  padding-top: var(--top-spacing);
 }
 
 .psf-settings-header {
@@ -140,6 +143,15 @@ tr.faqWrapper {
 
 /* PAGES */
 
+#psf_page_meta_box .inside {
+  margin: 0;
+  padding: 1.5rem 1rem 1rem 1rem;
+}
+#psf_page_meta_box .form-wrapper > table > tbody > tr + tr > th,
+#psf_page_meta_box .form-wrapper > table > tbody > tr + tr > td {
+  padding-top: 1.5rem;
+}
+
 #psf_page_meta_box .form-field th {
   width: 200px;
   vertical-align: top;
@@ -153,4 +165,12 @@ tr.faqWrapper {
 #psf_page_meta_box .form-field .description {
   max-width: 100%;
   padding: 2px 8px 0;
+}
+
+#psf_page_meta_box .form-field .faqWrapper + .faqWrapper > td:first-of-type {
+  padding-top: var(--top-spacing);
+}
+
+#psf_page_meta_box .form-field .faqWrapper + .faqWrapper > td.button-wrapper {
+  padding-top: calc(2 * var(--top-spacing));
 }

@@ -20,13 +20,10 @@ function psf_page_meta_box_display() {
   $psf_faqs = get_post_meta($page_id, 'psf_faqs', true);
   $psf_custom_heading = get_post_meta($page_id, 'psf_custom_heading', true);
 
-  wp_nonce_field('psf_page_meta_box_nonce', 'psf_page_meta_box_nonce');
+  wp_nonce_field('psf_save_page_meta_data', 'psf_page_meta_box_nonce');
 
 ?>
-  <div>
-    <h3>Vanliga frågor</h3>
-  </div>
-  <div>
+  <div class="form-wrapper">
     <table>
       <tr class="form-field">
         <th scope="row" valign="top" width="25%">
@@ -48,6 +45,41 @@ function psf_page_meta_box_display() {
     </table>
   </div>
 <?php
+}
+
+add_action('save_post', 'psf_save_page_meta_data');
+function psf_save_page_meta_data($post_id) {
+  if (!isset($_POST['psf_page_meta_box_nonce'])) return;
+
+  if (!wp_verify_nonce($_POST['psf_page_meta_box_nonce'], 'psf_save_page_meta_data')) return;
+
+  if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+
+  if (isset($_POST['post_type']) && 'page' == $_POST['post_type']) {
+    if (!current_user_can('edit_page', $post_id)) return;
+  } else {
+    if (!current_user_can('edit_post', $post_id)) return;
+  }
+
+  $oldHeading = get_post_meta($post_id, 'psf_custom_heading', true);
+  $newHeading = stripslashes(strip_tags($_POST['psf_custom_heading']));
+
+  $old = get_post_meta($post_id, 'psf_faqs', true);
+  $new = array();
+
+  $faqQuestions = $_POST['faqQuestion'];
+  $faqAnswers = $_POST['faqAnswer'];
+  $count = count($faqQuestions);
+  for ($i = 0; $i < $count; $i++) {
+    if ($faqQuestions[$i] != '') {
+      $new[$i]['faqQuestion'] = stripslashes(strip_tags($faqQuestions[$i]));
+      $new[$i]['faqAnswer'] = $faqAnswers[$i];
+    }
+  }
+
+  if ($newHeading != $oldHeading) update_post_meta($post_id, 'psf_custom_heading', $newHeading);
+  if (!empty($new) && $new != $old) update_post_meta($post_id, 'psf_faqs', $new);
+  if (empty($new) && $old) delete_post_meta($post_id, 'psf_faqs', $old);
 }
 
 function psf_meta_box_display($term) {
@@ -83,6 +115,7 @@ function psf_meta_box_display($term) {
   </div>
 <?php
 }
+
 
 
 add_action('edited_product_cat', 'custom_psf_meta_box_save', 10, 1);
