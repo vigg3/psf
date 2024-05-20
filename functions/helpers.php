@@ -30,6 +30,10 @@ function get_all_product_categories() {
   return $all_product_categories;
 }
 
+/**
+ * Retrives the value of a textarea.
+ * @param string $textarea The textarea value.
+ */
 function the_textarea_value($textarea) {
   $lines = explode("\n", $textarea);
   foreach ($lines as $line) {
@@ -37,70 +41,93 @@ function the_textarea_value($textarea) {
   }
 }
 
+/**
+ * Retrives the enabled pages.
+ * @return array The enabled pages.
+ */
+function psf_enabled_pages() {
+  return array_filter(explode(',', get_option('enabled_pages')));
+}
+
+/**
+ * Checks if the plugin is enabled on the current page.
+ * @return bool True if the plugin is enabled on the current page, false otherwise.
+ */
+function psf_enabled_on_current_page() {
+  $enabled_on_current_page = (!empty(psf_enabled_pages()) && in_array(get_the_ID(), psf_enabled_pages()));
+  return $enabled_on_current_page;
+}
+
+
 function psf_generate_faq_rows($psf_faqs) {
 ?>
-  <table id="repeateable-fieldset" class="inner-table" width="100%">
-    <tbody id="repeatable-tbody">
-      <?php
+<table id="repeateable-fieldset" class="inner-table" width="100%">
+  <tbody id="repeatable-tbody">
+    <?php
       if ($psf_faqs) :
         foreach ($psf_faqs as $key => $field) { ?>
-          <tr class="faqWrapper">
-            <td width="85%">
-              <div class="faqQuestion">
-                <label for="faqQuestion[<?php echo $key; ?>]">Fråga</label>
-                <input type="text" name="faqQuestion[<?php echo $key; ?>]" placeholder="Skriv frågan här" id="faqQuestion[<?php echo $key; ?>]" value="<?php if ($field['faqQuestion'] != '') echo esc_attr($field['faqQuestion']); ?>">
-              </div>
-              <div class="faqAnswer">
-                <label for="faqAnswer[<?php echo $key; ?>]">Svar</label>
-                <textarea placeholder="Skriv svaret på frågan här" cols="55" rows="3" name="faqAnswer[<?php echo $key; ?>]" id="faqAnswer[<?php echo $key; ?>]"><?php if ($field['faqAnswer'] != '') echo esc_attr($field['faqAnswer']); ?></textarea>
-              </div>
-            </td>
-            <td class="button-wrapper" width="15%">
-              <?php
-              if ($key > 0) { ?>
-                <a class="button remove-row" href="#">Ta bort</a>
-              <?php } ?>
-            </td>
-          </tr>
+    <tr class="faqWrapper">
+      <td width="85%">
+        <div class="faqQuestion">
+          <label for="faqQuestion[<?php echo $key; ?>]">Fråga</label>
+          <input type="text" name="faqQuestion[<?php echo $key; ?>]" placeholder="Skriv frågan här"
+            id="faqQuestion[<?php echo $key; ?>]"
+            value="<?php if ($field['faqQuestion'] != '') echo esc_attr($field['faqQuestion']); ?>">
+        </div>
+        <div class="faqAnswer">
+          <label for="faqAnswer[<?php echo $key; ?>]">Svar</label>
+          <textarea placeholder="Skriv svaret på frågan här" cols="55" rows="3" name="faqAnswer[<?php echo $key; ?>]"
+            id="faqAnswer[<?php echo $key; ?>]"><?php if ($field['faqAnswer'] != '') echo esc_attr($field['faqAnswer']); ?></textarea>
+        </div>
+      </td>
+      <td class="button-wrapper" width="15%">
         <?php
+              if ($key > 0) { ?>
+        <a class="button remove-row" href="#">Ta bort</a>
+        <?php } ?>
+      </td>
+    </tr>
+    <?php
         }
       else :
         ?>
-        <tr class="faqWrapper">
-          <td width="85%">
-            <div class="faqQuestion">
-              <label for="faqQuestion[0]">Fråga</label>
-              <input type="text" placeholder="Skriv frågan här" title="Fråga" name="faqQuestion[0]" id="faqQuestion[0]">
-            </div>
-            <div class="faqAnswer">
-              <label for="faqAnswer[0]">Svar</label>
-              <textarea placeholder="Skriv svaret på frågan här" name="faqAnswer[0]" cols="55" rows="3" id="faqAnswer[0]"></textarea>
-            </div>
-          </td>
-          <td class="button-wrapper" width=15%>
+    <tr class="faqWrapper">
+      <td width="85%">
+        <div class="faqQuestion">
+          <label for="faqQuestion[0]">Fråga</label>
+          <input type="text" placeholder="Skriv frågan här" title="Fråga" name="faqQuestion[0]" id="faqQuestion[0]">
+        </div>
+        <div class="faqAnswer">
+          <label for="faqAnswer[0]">Svar</label>
+          <textarea placeholder="Skriv svaret på frågan här" name="faqAnswer[0]" cols="55" rows="3"
+            id="faqAnswer[0]"></textarea>
+        </div>
+      </td>
+      <td class="button-wrapper" width=15%>
 
-          </td>
-        </tr>
-      <?php
+      </td>
+    </tr>
+    <?php
       endif;
       ?>
-      <tr class="faqWrapper empty-row screen-reader-text">
-        <td width="85%">
-          <div class="faqQuestion">
-            <label for="faqQuestion[]">Fråga</label>
-            <input type="text" placeholder="Skriv frågan här" title="Fråga" name="faqQuestion[]" id="faqQuestion[]">
-          </div>
-          <div class="faqAnswer">
-            <label for="faqAnswer[]">Svar</label>
-            <textarea placeholder="Skriv svaret på frågan här" name="faqAnswer[]" cols="55" rows="3" id="faqAnswer[]"></textarea>
-          </div>
-        </td>
-        <td class="button-wrapper" width=15%>
-          <a class="button remove-row" href="#">Ta bort</a>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <p><a href="#" class="button" id="add-row">Lägg till FAQ</a></p>
+    <tr class="faqWrapper empty-row screen-reader-text">
+      <td width="85%">
+        <div class="faqQuestion">
+          <label for="faqQuestion[]">Fråga</label>
+          <input type="text" placeholder="Skriv frågan här" title="Fråga" name="faqQuestion[]" id="faqQuestion[]">
+        </div>
+        <div class="faqAnswer">
+          <label for="faqAnswer[]">Svar</label>
+          <textarea placeholder="Skriv svaret på frågan här" name="faqAnswer[]" cols="55" rows="3"
+            id="faqAnswer[]"></textarea>
+        </div>
+      </td>
+      <td class="button-wrapper" width=15%>
+        <a class="button remove-row" href="#">Ta bort</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p><a href="#" class="button" id="add-row">Lägg till FAQ</a></p>
 <?php
 }

@@ -4,7 +4,7 @@
  * @wordpress-plugin
  * Plugin Name:       Page Specific FAQ
  * Description:       Enables FAQs on product categories and specified pages.
- * Version:           1.1.81
+ * Version:           2.0.0
  * Author:            Viktor Borg
  * Author URI:        viktorborg.myportfolio.com
  * License:           GPL-2.0+
@@ -30,25 +30,12 @@ function psf_activate() {
 }
 
 /**
- * Enabled pages
- */
-function psf_enabled_pages() {
-  return array_filter(explode(',', get_option('enabled_pages')));
-}
-function psf_enabled_on_current_page() {
-  $enabled_on_current_page = (!empty(psf_enabled_pages()) && in_array(get_the_ID(), psf_enabled_pages()));
-  return $enabled_on_current_page;
-}
-
-/**
  * Enqueue scripts & styles
  */
 add_action('admin_enqueue_scripts', 'register_psf_admin_scripts_styles', 20);
 function register_psf_admin_scripts_styles() {
   $screen = get_current_screen();
   $enabled_on_admin_page = false;
-
-  print_r($screen->id);
 
   if ($screen->id === 'page') {
     global $post;
@@ -108,7 +95,7 @@ function register_psf_scripts_styles() {
     psf_get_version()
   );
 
-  wp_localize_script('psf-scripts', 'psfScriptParams', $script_params);
+  // wp_localize_script('psf-scripts', 'psfScriptParams', $script_params);
   wp_enqueue_script('psf-scripts');
 }
 

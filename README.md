@@ -1,7 +1,7 @@
 # Page Specific FAQ
 
 Contributors: Viktor Borg  
-Tags: FAQ, FAQ generator, Schema, Schema.org  
+Tags: FAQ, FAQ generator, Schema, Schema.org, SEO  
 Requires at least: 3.0.1  
 License: GPLv2 or later  
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -14,21 +14,22 @@ Enables FAQs on chosen pages.
 
 ```bash
 page-specific-faq/
-├── assets/
-│   ├── css/
+├── assets
+│   ├── css
+│   │   ├── admin-styles.css
+│   │   ├── general.css
 │   │   └── styles.css
-│   ├── images/
+│   ├── images
 │   │   └── faqs.svg
-│   └── js/
-│       ├── faq-dynamic-fields.js
+│   └── js
+│       ├── admin-psf-scripts.js
 │       └── scripts.js
-├── functions/
+├── functions
 │   ├── helpers.php
 │   ├── psf-faq-markup.php
 │   ├── psf-meta-box-repeater.php
 │   ├── psf-register-settings.php
 │   └── psf-settings-page.php
 ├── README.md
-├── register-psf.php
-└── uninstall.php
+└── register-psf.php
 ```

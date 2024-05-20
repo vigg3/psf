@@ -65,7 +65,7 @@ function page_specific_faq_settings_page() {
             </td>
           </tr>
           <!-- Enabled pages -->
-          <tr valign="top">
+          <tr style="display:none;" valign="top">
             <th scope="row">
               <h3>Ytterligare sidor</h3>
               Välj fler sidor, utöver produktkategorierna, där FAQ ska aktiveras.

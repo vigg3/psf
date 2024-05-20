@@ -4,7 +4,6 @@ add_action('admin_init', 'psf_add_meta_boxes', 2);
 function psf_add_meta_boxes() {
   add_action('product_cat_edit_form_fields', 'psf_meta_box_display', 10, 1);
 
-
   add_meta_box(
     'psf_page_meta_box',
     __('Page Specific FAQ', 'page-specific-faq'),
@@ -23,27 +22,28 @@ function psf_page_meta_box_display() {
   wp_nonce_field('psf_save_page_meta_data', 'psf_page_meta_box_nonce');
 
 ?>
-  <div class="form-wrapper">
-    <table>
-      <tr class="form-field">
-        <th scope="row" valign="top" width="25%">
-          <label for="psf_custom_heading"><?php _e('Egen överskrift', 'page-specific-faq') ?></label>
-        </th>
-        <td>
-          <input type="text" name="psf_custom_heading" id="psf_custom_heading" placeholder="Ange en egen överskrift" value="<?php if ($psf_custom_heading != '') echo $psf_custom_heading; ?>">
-          <p class="description" id="psf_custom_heading-description">Om fältet lämnas tomt används standardtexten:
-            <code>Vanliga frågor</code>
-          </p>
-        </td>
-      </tr>
-      <tr class="form-field">
-        <th scope="row" valign="top">
-          <label for="psf_faqs"><?php _e('Frågor & Svar', 'page-specific-faq'); ?></label>
-        </th>
-        <td> <?php psf_generate_faq_rows($psf_faqs); ?> </td>
-      </tr>
-    </table>
-  </div>
+<div class="form-wrapper">
+  <table>
+    <tr class="form-field">
+      <th scope="row" valign="top" width="25%">
+        <label for="psf_custom_heading"><?php _e('Egen överskrift', 'page-specific-faq') ?></label>
+      </th>
+      <td>
+        <input type="text" name="psf_custom_heading" id="psf_custom_heading" placeholder="Ange en egen överskrift"
+          value="<?php if ($psf_custom_heading != '') echo $psf_custom_heading; ?>">
+        <p class="description" id="psf_custom_heading-description">Om fältet lämnas tomt används standardtexten:
+          <code>Vanliga frågor</code>
+        </p>
+      </td>
+    </tr>
+    <tr class="form-field">
+      <th scope="row" valign="top">
+        <label for="psf_faqs"><?php _e('Frågor & Svar', 'page-specific-faq'); ?></label>
+      </th>
+      <td> <?php psf_generate_faq_rows($psf_faqs); ?> </td>
+    </tr>q
+  </table>
+</div>
 <?php
 }
 
@@ -89,30 +89,32 @@ function psf_meta_box_display($term) {
   $psf_faqs = get_term_meta($term_id, 'psf_faqs', true);
   $psf_custom_heading = get_term_meta($term_id, 'psf_custom_heading', true);
   wp_nonce_field('psf_meta_box_nonce', 'psf_meta_box_nonce');
-  // $screen = get_current_screen();
+
 ?>
-  <div>
-    <tr class="form-field">
-      <th scope="row">
-        <h2>Page Specific FAQ</h2>
-      </th>
-    </tr>
-    <tr class="form-field">
-      <th scope="row" valign="top"><label for="psf_custom_heading"><?php _e('Egen överskrift', 'page-specific-faq') ?></label></th>
-      <td>
-        <input type="text" name="psf_custom_heading" id="psf_custom_heading" placeholder="Ange en egen överskrift" value="<?php if ($psf_custom_heading != '') echo $psf_custom_heading; ?>">
-        <p class="description" id="psf_custom_heading-description">Om fältet lämnas tomt används standardtexten:
-          <code>Vanliga frågor om <?php echo $product_cat_name; ?></code>
-        </p>
-      </td>
-    </tr>
-    <tr class="form-field">
-      <th scope="row" valign="top">
-        <label for="psf_faqs"><?php _e('Frågor & Svar', 'page-specific-faq'); ?></label>
-      </th>
-      <td> <?php psf_generate_faq_rows($psf_faqs); ?> </td>
-    </tr>
-  </div>
+<div>
+  <tr class="form-field">
+    <th scope="row">
+      <h2>Page Specific FAQ</h2>
+    </th>
+  </tr>
+  <tr class="form-field">
+    <th scope="row" valign="top"><label
+        for="psf_custom_heading"><?php _e('Egen överskrift', 'page-specific-faq') ?></label></th>
+    <td>
+      <input type="text" name="psf_custom_heading" id="psf_custom_heading" placeholder="Ange en egen överskrift"
+        value="<?php if ($psf_custom_heading != '') echo $psf_custom_heading; ?>">
+      <p class="description" id="psf_custom_heading-description">Om fältet lämnas tomt används standardtexten:
+        <code>Vanliga frågor om <?php echo $product_cat_name; ?></code>
+      </p>
+    </td>
+  </tr>
+  <tr class="form-field">
+    <th scope="row" valign="top">
+      <label for="psf_faqs"><?php _e('Frågor & Svar', 'page-specific-faq'); ?></label>
+    </th>
+    <td> <?php psf_generate_faq_rows($psf_faqs); ?> </td>
+  </tr>
+</div>
 <?php
 }
 

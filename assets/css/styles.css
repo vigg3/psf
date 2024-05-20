@@ -182,6 +182,6 @@
   }
   .faqContent .faqAnswerText {
     font-size: 18px;
-    text-align: justify;
+    /* text-align: justify; */
   }
 }
