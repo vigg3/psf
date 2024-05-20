@@ -17,7 +17,6 @@ page-specific-faq/
 ├── assets
 │   ├── css
 │   │   ├── admin-styles.css
-│   │   ├── general.css
 │   │   └── styles.css
 │   ├── images
 │   │   └── faqs.svg
