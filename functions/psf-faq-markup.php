@@ -40,7 +40,6 @@ function psf_generate_faq_markup($psf_faqs, $faq_heading) {
   if (empty($psf_faqs)) return '';
 
   $className = count($psf_faqs) == 1 ? 'faqContent singleQuestion' : 'faqContent';
-
   ob_start();
 ?>
 <div class="faqWrapper">
@@ -72,10 +71,11 @@ function psf_generate_faq_markup($psf_faqs, $faq_heading) {
  */
 function psf_faq_add_product_category_markup() {
   $queried_object = get_queried_object();
-  if (!isset($queried_object->term_id)) {
-    return;
-  }
+  if (!isset($queried_object->term_id)) return;
+
   list($psf_faqs, $faq_heading) = psf_get_faqs_and_heading($queried_object->term_id, 'term');
+
+  if (empty($psf_faqs)) return;
 
   echo psf_generate_faq_markup($psf_faqs, $faq_heading);
 }
@@ -88,6 +88,23 @@ function psf_faq_add_page_markup() {
     $post_id = get_the_ID();
     list($psf_faqs, $faq_heading) = psf_get_faqs_and_heading($post_id, 'post');
 
+    if (empty($psf_faqs)) return;
+
     echo psf_generate_faq_markup($psf_faqs, $faq_heading);
   }
 }
+
+/**
+ * Adds the FAQ markup to the shop page.
+ */
+function psf_faq_add_shop_page_markup() {
+  if (is_shop()) {
+    $shop_id = wc_get_page_id('shop');
+    list($psf_faqs, $faq_heading) = psf_get_faqs_and_heading($shop_id, 'post');
+
+    if (empty($psf_faqs)) return;
+
+    echo psf_generate_faq_markup($psf_faqs, $faq_heading);
+  }
+}
+add_action('woocommerce_after_main_content', 'psf_faq_add_shop_page_markup');

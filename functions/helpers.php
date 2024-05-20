@@ -84,7 +84,8 @@ function psf_generate_faq_rows($psf_faqs) {
         <?php
               if ($key > 0) { ?>
         <a class="button remove-row" href="#">Ta bort</a>
-        <?php } ?>
+        <?php
+              } ?>
       </td>
     </tr>
     <?php

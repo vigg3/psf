@@ -23,7 +23,7 @@
 .faqContent h2 {
   font-size: 24px;
   font-weight: 500;
-  color: var(--text-clr-primary);
+  color: var(--clr-text-primary);
   text-align: center;
   padding-top: var(--spacing);
   padding-right: calc(0.5 * var(--spacing));
