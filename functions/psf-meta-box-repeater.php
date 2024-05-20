@@ -41,7 +41,7 @@ function psf_page_meta_box_display() {
         <label for="psf_faqs"><?php _e('Frågor & Svar', 'page-specific-faq'); ?></label>
       </th>
       <td> <?php psf_generate_faq_rows($psf_faqs); ?> </td>
-    </tr>q
+    </tr>
   </table>
 </div>
 <?php

@@ -4,7 +4,7 @@
  * @wordpress-plugin
  * Plugin Name:       Page Specific FAQ
  * Description:       Enables FAQs on product categories and specified pages.
- * Version:           2.0.0
+ * Version:           2.0.1
  * Author:            Viktor Borg
  * Author URI:        viktorborg.myportfolio.com
  * License:           GPL-2.0+
@@ -35,26 +35,8 @@ function psf_activate() {
 add_action('admin_enqueue_scripts', 'register_psf_admin_scripts_styles', 20);
 function register_psf_admin_scripts_styles() {
   $screen = get_current_screen();
-  $enabled_on_admin_page = false;
 
-  if ($screen->id === 'page') {
-    global $post;
-    $page_id = $post->ID;
-
-    $enabled_pages = psf_enabled_pages();
-    $enabled_on_admin_page = (!empty($enabled_pages) && in_array($page_id, $enabled_pages));
-  }
-
-  if ($screen->id == 'toplevel_page_psf-settings') {
-    wp_enqueue_style(
-      'psf-admin-styles',
-      PSF_CSS_PATH . '/admin-styles.css',
-      array(),
-      psf_get_version()
-    );
-  }
-
-  if ($screen->taxonomy == 'product_cat' || $screen->id == 'toplevel_page_psf-settings' || $enabled_on_admin_page) {
+  if ($screen->taxonomy == 'product_cat' || $screen->id == 'toplevel_page_psf-settings' || $screen->id === 'page') {
     wp_enqueue_script(
       'psf-admin-scripts',
       PSF_JS_PATH . '/admin-psf-scripts.js',
@@ -79,15 +61,6 @@ function register_psf_scripts_styles() {
     psf_get_version()
   );
 
-  $enabled_on_current_page = psf_enabled_on_current_page();
-
-  $disabled_on_current_page = false;
-  $script_params = array(
-    'enabled_on_current_page'       => $enabled_on_current_page,
-    'disabled_on_current_page'      => $disabled_on_current_page,
-    'id'                            => get_the_ID(),
-  );
-
   wp_register_script(
     'psf-scripts',
     PSF_JS_PATH . '/scripts.js',
@@ -95,7 +68,6 @@ function register_psf_scripts_styles() {
     psf_get_version()
   );
 
-  // wp_localize_script('psf-scripts', 'psfScriptParams', $script_params);
   wp_enqueue_script('psf-scripts');
 }
 
