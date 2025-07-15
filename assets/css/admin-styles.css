@@ -1,176 +1,197 @@
 .inner-table {
-  --top-spacing: 1.4rem;
+    --top-spacing: 1.4rem;
 }
 .form-field .button-wrapper {
-  text-align: right;
+    text-align: right;
 }
 
 .form-field textarea,
 .form-field input[type='text'] {
-  width: 100%;
+    width: 100%;
 }
 
 .form-field .inner-table {
-  border-spacing: 0;
+    border-spacing: 0;
 }
 
 .inner-table tr > td {
-  padding-left: 0;
-  padding-right: 0;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 td .faqQuestion {
-  padding-top: 0;
+    padding-top: 0;
 }
 
 td .faqAnswer {
-  padding-top: 0;
-  margin-top: 0.5rem;
+    padding-top: 0;
+    margin-top: 0.5rem;
 }
 
 .faqQuestion input,
 .faqAnswer input {
-  margin-top: 0.2rem;
+    margin-top: 0.2rem;
 }
 
 .inner-table > tbody > tr > td {
-  vertical-align: top;
+    vertical-align: top;
 }
 
 .inner-table > tbody > tr > td:first-of-type {
-  padding-top: 0;
+    padding-top: 0;
 }
 
 .inner-table .button-wrapper {
-  padding-top: var(--top-spacing);
+    padding-top: var(--top-spacing);
 }
 
 .psf-settings-header {
-  background: #3e7da6;
-  box-shadow: 1px 1px 3px rgb(0 0 0 / 3%);
-  margin-left: -20px;
+    background: #3e7da6;
+    box-shadow: 1px 1px 3px rgb(0 0 0 / 3%);
+    margin-left: -20px;
 }
 
 .psf-settings__wrapper h2 {
-  font-size: 1.4em;
-  font-weight: 600;
-  margin: 0 0 10px;
+    font-size: 1.4em;
+    font-weight: 600;
+    margin: 0 0 10px;
 }
 
 .psf-settings__wrapper h3 {
-  font-size: 1.2em;
-  font-weight: 600;
-  margin: 0 0 10px;
+    font-size: 1.2em;
+    font-weight: 600;
+    margin: 0 0 10px;
 }
 
 .psf-settings__grid-wrapper {
-  display: -ms-grid;
-  display: grid;
-  grid-column-gap: 0.875rem;
-  -ms-grid-columns: 15rem auto;
-  grid-template-columns: 15rem auto;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 69.5rem;
-  padding: 1.5rem;
+    display: -ms-grid;
+    display: grid;
+    grid-column-gap: 0.875rem;
+    -ms-grid-columns: 15rem auto;
+    grid-template-columns: 15rem auto;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 69.5rem;
+    padding: 1.5rem;
 }
 
 .psf-settings__wrapper {
-  margin: 10px 20px 0 2px;
+    margin: 10px 20px 0 2px;
 }
 
 .psf-settings__wrapper th {
-  font-weight: 400;
-  width: 30%;
+    font-weight: 400;
+    width: 30%;
 }
 
 .psf-settings__wrapper th a {
-  font-style: italic;
+    font-style: italic;
 }
 
 .psf-settings__wrapper td {
-  padding-top: calc(20px + 24px + 10px);
-  padding-left: calc(25px + 10px);
-  vertical-align: top;
+    padding-top: calc(20px + 24px + 10px);
+    padding-left: calc(25px + 10px);
+    vertical-align: top;
 }
 
 .psf-settings__wrapper input.code {
-  line-height: 1;
-  height: 2em;
-  min-width: 300px;
+    line-height: 1;
+    height: 2em;
+    min-width: 300px;
 }
 
 .psf-settings__wrapper .radio-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .psf-settings__wrapper .checkbox_wrapper {
-  display: flex;
-  align-items: start;
-  gap: 6px;
+    display: flex;
+    align-items: start;
+    gap: 6px;
 }
 .psf-settings__wrapper .checkbox_wrapper + .checkbox_wrapper {
-  margin-top: 15px;
+    margin-top: 15px;
 }
 
 .psf-settings__wrapper .checkbox_wrapper input[type='checkbox'] {
-  margin: 0;
+    margin: 0;
 }
 .psf-settings__wrapper .checkbox_wrapper label {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 .psf-settings__wrapper .checkbox_wrapper label span:first-of-type {
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.1;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.1;
 }
 .psf-settings__wrapper .checkbox_wrapper label span:last-of-type {
-  color: #585858;
+    color: #585858;
 }
 
 tr.faqWrapper {
-  display: block;
-  box-sizing: border-box;
-  min-width: 532px;
+    display: block;
+    box-sizing: border-box;
+    min-width: 532px;
 }
 
 /* PAGES */
 
 #psf_page_meta_box .inside {
-  margin: 0;
-  padding: 1.5rem 1rem 1rem 1rem;
+    margin: 0;
+    padding: 1.5rem 1rem 1rem 1rem;
 }
 #psf_page_meta_box .form-wrapper > table > tbody > tr + tr > th,
 #psf_page_meta_box .form-wrapper > table > tbody > tr + tr > td {
-  padding-top: 1.5rem;
+    padding-top: 1.5rem;
 }
 
 #psf_page_meta_box .form-field th {
-  width: 200px;
-  vertical-align: top;
-  text-align: left;
+    width: 200px;
+    vertical-align: top;
+    text-align: left;
 }
 
 #psf_page_meta_box .form-field input {
-  /* width: 100%; */
+    /* width: 100%; */
 }
 
 #psf_page_meta_box .form-field .description {
-  max-width: 100%;
-  padding: 2px 8px 0;
+    max-width: 100%;
+    padding: 2px 8px 0;
 }
 
 #psf_page_meta_box .form-field .faqWrapper + .faqWrapper > td:first-of-type {
-  padding-top: var(--top-spacing);
+    padding-top: var(--top-spacing);
 }
 
 #psf_page_meta_box .form-field .faqWrapper + .faqWrapper > td.button-wrapper {
-  padding-top: calc(2 * var(--top-spacing));
+    padding-top: calc(2 * var(--top-spacing));
+}
+
+.psf-shortcode-documentation-wrapper {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.psf-shortcode-documentation-wrapper code {
+    background: #fff;
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.psf-shortcode-documentation-wrapper span.description {
+    color: #585858;
+    display: block;
+    margin: 4px 0 12px 0;
+    padding: 0 0 0 4px;
 }

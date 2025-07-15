@@ -4,8 +4,8 @@
  * @wordpress-plugin
  * Plugin Name:       Page Specific FAQ
  * Description:       Enables FAQs on product categories and specified pages.
- * Version:           2.0.4
- * Author:            Viktor Borg
+ * Version:           2.0.5
+ * Author:            viggebe
  * Author URI:        viktorborg.myportfolio.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
@@ -24,6 +24,11 @@ define('PSF_FUNCTIONS_PATH', untrailingslashit(plugin_dir_path(__FILE__)) . '/fu
 
 define('PSF_SETTINGS_GROUP', 'psf-settings-group');
 
+// Load all function files before anything else
+foreach (glob(PSF_FUNCTIONS_PATH . '*.php') as $file) {
+  require_once $file;
+}
+
 register_activation_hook(__FILE__, 'psf_activate');
 function psf_activate() {
   add_action('admin_menu', 'psf_menu');
@@ -39,15 +44,15 @@ function register_psf_admin_scripts_styles() {
   if ($screen->taxonomy == 'product_cat' || $screen->id == 'toplevel_page_psf-settings' || $screen->id === 'page') {
     wp_enqueue_script(
       'psf-admin-scripts',
-      PSF_JS_PATH . '/admin-psf-scripts.js',
+      PSF_JS_PATH . 'admin-psf-scripts.js',
       array('jquery'),
-      psf_get_version()
+      psf_get_plugin_version()
     );
     wp_enqueue_style(
       'psf-admin-styles',
-      PSF_CSS_PATH . '/admin-styles.css',
+      PSF_CSS_PATH . 'admin-styles.css',
       array(),
-      psf_get_version()
+      psf_get_plugin_version()
     );
   }
 }
@@ -56,16 +61,16 @@ add_action('wp_enqueue_scripts', 'register_psf_scripts_styles');
 function register_psf_scripts_styles() {
   wp_enqueue_style(
     'psf-styles',
-    PSF_CSS_PATH . '/styles.css',
+    PSF_CSS_PATH . 'styles.css',
     array(),
-    psf_get_version()
+    psf_get_plugin_version()
   );
 
   wp_register_script(
     'psf-scripts',
-    PSF_JS_PATH . '/scripts.js',
+    PSF_JS_PATH . 'scripts.js',
     array('jquery'),
-    psf_get_version()
+    psf_get_plugin_version()
   );
 
   wp_enqueue_script('psf-scripts');
@@ -78,8 +83,19 @@ function psf_menu() {
   $capability   = 'manage_options';
   $menu_slug    = 'psf-settings';
   $page_markup  = 'page_specific_faq_settings_page';
-  $icon_url     = 'data:image/svg+xml;base64,' . base64_encode(file_get_contents(PSF_IMAGES_PATH . '/faqs.svg'));
-  $position     = '3';
+
+  // Use local file path instead of URL for SVG icon
+  $svg_path = PSF_PLUGIN_PATH . 'assets/images/faqs.svg';
+  $icon_url = '';
+
+  if (file_exists($svg_path)) {
+    $svg_content = file_get_contents($svg_path);
+    if ($svg_content !== false) {
+      $icon_url = 'data:image/svg+xml;base64,' . base64_encode($svg_content);
+    }
+  }
+
+  $position = '3';
 
   add_menu_page(
     $page_title,
@@ -90,8 +106,4 @@ function psf_menu() {
     $icon_url,
     $position
   );
-}
-
-foreach (glob(PSF_FUNCTIONS_PATH . '*.php') as $file) {
-  require_once $file;
 }
