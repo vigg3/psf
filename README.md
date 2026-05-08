@@ -65,7 +65,7 @@ Go to **Page Specific FAQ > Settings** to configure:
 
 ### Schema.org Structure
 
-The plugin emits a single Schema.org FAQPage block as JSON-LD in `<head>` (preferred by Google over inline microdata):
+The plugin emits a single Schema.org FAQPage block as JSON-LD inline alongside the FAQ markup (Google accepts JSON-LD in body or head):
 
 ```html
 <script type="application/ld+json">

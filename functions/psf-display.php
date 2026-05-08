@@ -80,11 +80,11 @@ function psf_render_faq_for_term($term_id) {
         psf_debug_log("FAQ for term {$term_id} already rendered (hook " . current_action() . ')');
         return;
     }
-    $rendered[$term_id] = true;
 
     list($faqs, $heading) = psf_get_faqs_and_heading($term_id, 'term');
     if (empty($faqs) || !is_array($faqs)) return;
 
+    $rendered[$term_id] = true;
     psf_debug_log('Rendering FAQ on ' . current_action() . " for term {$term_id}");
     echo psf_generate_faq_markup($faqs, $heading);
 }
@@ -100,7 +100,6 @@ function psf_render_shop_faq() {
     if (!is_shop()) return;
     static $done = false;
     if ($done) return;
-    $done = true;
 
     $shop_id = wc_get_page_id('shop');
     if ($shop_id < 1) return;
@@ -108,6 +107,7 @@ function psf_render_shop_faq() {
     list($faqs, $heading) = psf_get_faqs_and_heading($shop_id, 'post');
     if (empty($faqs)) return;
 
+    $done = true;
     psf_debug_log('Rendering shop FAQ on ' . current_action());
     echo psf_generate_faq_markup($faqs, $heading);
 }
@@ -116,11 +116,11 @@ function psf_render_page_faq() {
     if (!is_page()) return;
     static $done = false;
     if ($done) return;
-    $done = true;
 
     list($faqs, $heading) = psf_get_faqs_and_heading(get_the_ID(), 'post');
     if (empty($faqs)) return;
 
+    $done = true;
     psf_debug_log('Rendering page FAQ on ' . current_action());
     echo psf_generate_faq_markup($faqs, $heading);
 }

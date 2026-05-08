@@ -159,19 +159,6 @@ function psf_enhance_meta_description($description, $object_id = null) {
   return $excerpt !== '' ? $excerpt : $description;
 }
 
-add_action('wp_head', 'psf_add_structured_data', 20);
-function psf_add_structured_data() {
-  if (!is_singular()) return;
-
-  $faqs = psf_get_post_meta_safe(get_the_ID(), 'psf_faqs', []);
-  if (empty($faqs)) return;
-
-  $data = psf_generate_structured_data($faqs);
-  if (!empty($data['mainEntity'])) {
-    echo '<script type="application/ld+json">' . wp_json_encode($data, JSON_UNESCAPED_UNICODE) . "</script>\n";
-  }
-}
-
 add_filter('get_the_excerpt', 'psf_ensure_excerpt', 5, 2);
 function psf_ensure_excerpt($excerpt, $post) {
   $excerpt = (string) ($excerpt ?? '');
