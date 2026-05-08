@@ -65,25 +65,22 @@ Go to **Page Specific FAQ > Settings** to configure:
 
 ### Schema.org Structure
 
-The plugin automatically generates correct Schema.org FAQPage structure:
+The plugin emits a single Schema.org FAQPage block as JSON-LD in `<head>` (preferred by Google over inline microdata):
 
 ```html
-<div
-    itemscope
-    itemtype="https://schema.org/FAQPage">
-    <div
-        itemscope
-        itemprop="mainEntity"
-        itemtype="https://schema.org/Question">
-        <h3 itemprop="name">The Question</h3>
-        <div
-            itemscope
-            itemprop="acceptedAnswer"
-            itemtype="https://schema.org/Answer">
-            <div itemprop="text">The Answer</div>
-        </div>
-    </div>
-</div>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "The question",
+      "acceptedAnswer": { "@type": "Answer", "text": "The answer" }
+    }
+  ]
+}
+</script>
 ```
 
 ### Hooks and Filters
