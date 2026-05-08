@@ -48,14 +48,10 @@ function get_all_product_categories() {
  * @param string $textarea The textarea value.
  */
 function the_textarea_value($textarea) {
-  // Ensure the input is a string before processing.
   if (!is_string($textarea)) {
     return;
   }
-  $lines = explode("\n", $textarea);
-  foreach ($lines as $line) {
-    echo $line . '</br>';
-  }
+  echo nl2br(esc_html($textarea));
 }
 
 /**
