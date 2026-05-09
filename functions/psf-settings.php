@@ -19,7 +19,7 @@ function page_specific_faq_settings() {
         PSF_SETTINGS_GROUP,
         'enabled_pages',
         array(
-            'sanitize_callback' => 'wp_filter_nohtml_kses',
+            'sanitize_callback' => 'psf_sanitize_id_list',
             'default'           => ''
         )
     );
@@ -63,6 +63,15 @@ function page_specific_faq_settings() {
             'default'           => 'yes'
         )
     );
+}
+
+/**
+ * Coerce a comma-separated list of post IDs to "1,2,3" form, dropping junk.
+ */
+function psf_sanitize_id_list($value) {
+    if (!is_string($value)) return '';
+    $ids = array_filter(array_map('absint', explode(',', $value)));
+    return implode(',', $ids);
 }
 
 /**

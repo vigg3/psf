@@ -45,22 +45,10 @@ function psf_save_page_meta_data($post_id) {
   }
 
   $oldHeading = get_post_meta($post_id, 'psf_custom_heading', true);
-  $newHeading = stripslashes(strip_tags($_POST['psf_custom_heading']));
+  $newHeading = sanitize_text_field(wp_unslash($_POST['psf_custom_heading'] ?? ''));
 
   $old = get_post_meta($post_id, 'psf_faqs', true);
-  $new = array();
-
-  if (isset($_POST['faqQuestion']) && isset($_POST['faqAnswer'])) {
-    $faqQuestions = $_POST['faqQuestion'];
-    $faqAnswers = $_POST['faqAnswer'];
-    $count = count($faqQuestions);
-    for ($i = 0; $i < $count; $i++) {
-      if (!empty($faqQuestions[$i])) {
-        $new[$i]['faqQuestion'] = stripslashes(strip_tags($faqQuestions[$i]));
-        $new[$i]['faqAnswer'] = isset($faqAnswers[$i]) ? $faqAnswers[$i] : '';
-      }
-    }
-  }
+  $new = psf_collect_faqs_from_post();
 
   if ($newHeading != $oldHeading) update_post_meta($post_id, 'psf_custom_heading', $newHeading);
   if (!empty($new) && $new != $old) update_post_meta($post_id, 'psf_faqs', $new);
@@ -84,24 +72,15 @@ function psf_meta_box_display($term) {
  */
 function custom_psf_meta_box_save($term_id) {
   if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+  if (!isset($_POST['psf_meta_box_nonce'])) return;
+  if (!wp_verify_nonce($_POST['psf_meta_box_nonce'], 'psf_meta_box_nonce')) return;
+  if (!current_user_can('manage_product_terms')) return;
 
   $oldHeading = get_term_meta($term_id, 'psf_custom_heading', true);
-  $newHeading = stripslashes(strip_tags($_POST['psf_custom_heading']));
+  $newHeading = sanitize_text_field(wp_unslash($_POST['psf_custom_heading'] ?? ''));
 
   $old = get_term_meta($term_id, 'psf_faqs', true);
-  $new = array();
-
-  if (isset($_POST['faqQuestion']) && isset($_POST['faqAnswer'])) {
-    $faqQuestions = $_POST['faqQuestion'];
-    $faqAnswers = $_POST['faqAnswer'];
-    $count = count($faqQuestions);
-    for ($i = 0; $i < $count; $i++) {
-      if (!empty($faqQuestions[$i])) {
-        $new[$i]['faqQuestion'] = stripslashes(strip_tags($faqQuestions[$i]));
-        $new[$i]['faqAnswer'] = isset($faqAnswers[$i]) ? $faqAnswers[$i] : '';
-      }
-    }
-  }
+  $new = psf_collect_faqs_from_post();
 
   if ($newHeading != $oldHeading) update_term_meta($term_id, 'psf_custom_heading', $newHeading);
   if (!empty($new) && $new != $old) update_term_meta($term_id, 'psf_faqs', $new);
@@ -109,3 +88,25 @@ function custom_psf_meta_box_save($term_id) {
 }
 
 add_action('edited_product_cat', 'custom_psf_meta_box_save', 10, 1);
+
+/**
+ * Build a sanitized FAQ array from $_POST (faqQuestion[], faqAnswer[]).
+ *
+ * @return array<int, array{faqQuestion: string, faqAnswer: string}>
+ */
+function psf_collect_faqs_from_post() {
+  if (!isset($_POST['faqQuestion'], $_POST['faqAnswer'])) return [];
+  if (!is_array($_POST['faqQuestion']) || !is_array($_POST['faqAnswer'])) return [];
+
+  $questions = wp_unslash($_POST['faqQuestion']);
+  $answers   = wp_unslash($_POST['faqAnswer']);
+  $out = [];
+
+  foreach ($questions as $i => $q) {
+    $q = sanitize_text_field((string) $q);
+    if ($q === '') continue;
+    $a = isset($answers[$i]) ? sanitize_textarea_field((string) $answers[$i]) : '';
+    $out[] = ['faqQuestion' => $q, 'faqAnswer' => $a];
+  }
+  return $out;
+}

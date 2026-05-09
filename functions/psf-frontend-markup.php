@@ -30,48 +30,36 @@ function psf_generate_faq_markup($psf_faqs, $faq_heading) {
         return '';
     }
 
-    if (defined('WP_DEBUG') && WP_DEBUG && get_option('debug_mode', '0') === '1') {
-        error_log('[PSF DEBUG] psf_generate_faq_markup: Generating HTML for ' . count($psf_faqs) . ' FAQs');
-        error_log('[PSF DEBUG] psf_generate_faq_markup: Heading: ' . $faq_heading);
-        error_log('[PSF DEBUG] psf_generate_faq_markup: FAQ data structure: ' . print_r($psf_faqs, true));
-    }
+    psf_debug_log('psf_generate_faq_markup: ' . count($psf_faqs) . ' FAQs, heading: ' . $faq_heading);
 
-    $className = count($psf_faqs) == 1 ? 'faqContent singleQuestion' : 'faqContent';
+    $className = count($psf_faqs) === 1 ? 'faqContent singleQuestion' : 'faqContent';
+    $jsonld    = psf_generate_structured_data($psf_faqs);
+
     ob_start();
 ?>
 <div class="faqWrapper">
-    <div class="<?= esc_attr($className); ?>" itemscope itemtype="https://schema.org/FAQPage">
+    <?php if (!empty($jsonld['mainEntity'])): ?>
+    <script type="application/ld+json"><?= wp_json_encode($jsonld, JSON_UNESCAPED_UNICODE); ?></script>
+    <?php endif; ?>
+    <div class="<?= esc_attr($className); ?>">
         <?php if (!empty($faq_heading)): ?>
         <h2><?php echo esc_html($faq_heading); ?></h2>
         <?php endif; ?>
-        <?php
-            foreach ($psf_faqs as $field) { ?>
-        <div class="faqEntity" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <?php foreach ($psf_faqs as $field): ?>
+        <div class="faqEntity">
             <div class="faqQuestion">
-                <h3 class="faqQuestionText" itemprop="name"><?php echo esc_html($field['faqQuestion']); ?>
-                </h3>
+                <h3 class="faqQuestionText"><?php echo esc_html($field['faqQuestion']); ?></h3>
                 <span class="accordionPlus"></span>
             </div>
-            <div class="faqAnswer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                <div class="faqAnswerText" itemprop="text">
-                    <?php
-                            if (!empty($field['faqAnswer'])) {
-                                the_textarea_value($field['faqAnswer']);
-                            }
-                            ?>
+            <div class="faqAnswer">
+                <div class="faqAnswerText">
+                    <?php if (!empty($field['faqAnswer'])) the_textarea_value($field['faqAnswer']); ?>
                 </div>
             </div>
         </div>
-        <?php
-            } ?>
+        <?php endforeach; ?>
     </div>
 </div>
 <?php
-    $html_output = ob_get_clean();
-
-    if (defined('WP_DEBUG') && WP_DEBUG && get_option('debug_mode', '0') === '1') {
-        error_log('[PSF DEBUG] psf_generate_faq_markup: Generated HTML length: ' . strlen($html_output) . ' characters');
-    }
-
-    return $html_output;
+    return ob_get_clean();
 }
