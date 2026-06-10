@@ -5,7 +5,7 @@
 **Requires at least:** 5.0  
 **Tested up to:** 6.4  
 **Requires PHP:** 7.4  
-**Stable tag:** 2.0.5  
+**Stable tag:** 2.1.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,7 +65,7 @@ Go to **Page Specific FAQ > Settings** to configure:
 
 ### Schema.org Structure
 
-The plugin emits a single Schema.org FAQPage block as JSON-LD inline alongside the FAQ markup (Google accepts JSON-LD in body or head):
+The plugin emits a single consolidated Schema.org FAQPage block as JSON-LD in the footer (`wp_footer`), built from the same FAQ items rendered on the page so the schema can never drift from the visible content. All FAQ blocks on a page are merged into one FAQPage with a single `mainEntity` array:
 
 ```html
 <script type="application/ld+json">
@@ -87,6 +87,12 @@ The plugin emits a single Schema.org FAQPage block as JSON-LD inline alongside t
 
 -   `woo_visual_hook` - Hook for product categories (default: `woocommerce_after_main_content`)
 -   `page_visual_hook` - Hook for pages (default: `the_content`)
+
+PHP filters for the FAQPage schema:
+
+-   `psf_faqpage_schema` - filter the full FAQPage data array before it is encoded
+-   `psf_faqpage_answer` - filter each answer string (receives `$text, $question`)
+-   `psf_faqpage_schema_already_present` - return `true` to suppress output when another plugin already emits an FAQPage
 
 ### CSS Classes
 
@@ -128,6 +134,17 @@ page-specific-faq/
 -   WooCommerce (for product category functionality)
 
 ## Changelog
+
+### 2.1.0
+
+-   **Automatic FAQPage JSON-LD** — emits one consolidated Schema.org `FAQPage` block per page in the footer, built from the exact FAQ items rendered (pages, product-category archives, shop page and `[psf_faq]` shortcode all included), so schema always matches the visible questions and answers
+-   Answers are reduced to plain text, whitespace-collapsed and trimmed; empty items skipped and duplicate questions deduplicated
+-   New setting **FAQ Schema (JSON-LD)** (default ON) to toggle the output
+-   New filters: `psf_faqpage_schema`, `psf_faqpage_answer`, `psf_faqpage_schema_already_present`
+-   Output uses `JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES` so Swedish characters (å ä ö) and URLs stay readable
+-   Removed the old per-block inline JSON-LD (could produce multiple FAQPage blocks on one page) and the now-unused `psf_generate_structured_data()` helper; the schema is now generated from a single source
+
+> Note: as of 7 May 2026 Google no longer shows FAQ rich results, so this markup is primarily for AI answer engines (ChatGPT, Perplexity, Gemini, AI Overviews) and Bing. It remains valid schema.org. If you use a page cache (e.g. W3 Total Cache), purge it after upgrading or toggling the setting.
 
 ### 2.0.5
 
