@@ -5,7 +5,7 @@
 **Requires at least:** 5.0  
 **Tested up to:** 6.4  
 **Requires PHP:** 7.4  
-**Stable tag:** 2.1.0  
+**Stable tag:** 2.1.1  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -134,6 +134,10 @@ page-specific-faq/
 -   WooCommerce (for product category functionality)
 
 ## Changelog
+
+### 2.1.1
+
+-   **Fixed: configured FAQ position is now respected on category pages.** The category FAQ was registered on several WooCommerce hooks at once, so whichever hook fired first in the template won and the `Position` setting was ignored (`woocommerce_archive_description` fires early and hijacked it). It is now registered only on the configured hook, with a single late `wp_footer` fallback (priority 9998) that renders the FAQ only if the chosen hook never fired — covering themes (Flatsome, Hello Elementor) whose templating bypasses standard Woo hooks. The same footer fallback now also applies to page and shop FAQs.
 
 ### 2.1.0
 

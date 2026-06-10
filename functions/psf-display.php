@@ -13,39 +13,34 @@ if (get_option('hook_rendering_enabled', 'yes') === 'no') {
 $woo_visual_hook  = psf_get_option_safe('woo_visual_hook', 'woocommerce_after_shop_loop');
 $page_visual_hook = psf_get_option_safe('page_visual_hook', 'the_content');
 
-// Hello Elementor's templating bypasses normal Woo hooks; fall back to
-// loop_end / get_footer / wp_footer when the user's chosen Woo hook never fires.
-if (get_template() === 'hello-elementor') {
-    if ($woo_visual_hook !== '') {
-        add_action($woo_visual_hook, 'psf_render_category_faq', 5);
-        psf_debug_log("Hello Elementor: registered on user hook {$woo_visual_hook} (priority 5)");
-    }
-    foreach (['loop_end' => 20, 'get_footer' => 25, 'wp_footer' => 109] as $hook => $priority) {
-        add_action($hook, 'psf_render_category_faq', $priority);
-        psf_debug_log("Hello Elementor: registered backup hook {$hook} (priority {$priority})");
-    }
-} else {
-    $woo_hooks = [
-        $woo_visual_hook                 => 15,
-        'woocommerce_after_shop_loop'    => 20,
-        'woocommerce_after_main_content' => 25,
-        'woocommerce_archive_description' => 30,
-    ];
-    foreach ($woo_hooks as $hook => $priority) {
-        if (is_string($hook) && $hook !== '') {
-            add_action($hook, 'psf_render_category_faq', $priority);
-            psf_debug_log("Registered FAQ on Woo hook {$hook} (priority {$priority})");
-        }
-    }
+// Render each FAQ at the user-CONFIGURED hook only, so the chosen position is
+// respected. (Previously the category FAQ was registered on several Woo hooks
+// at once; priority numbers only order callbacks within one hook, so whichever
+// hook fired first in the template won and the setting was ignored —
+// woocommerce_archive_description fires early and hijacked it.)
+//
+// A single late wp_footer safety net (priority 9998) then renders anything the
+// configured hook never fired for — e.g. themes like Flatsome or Hello
+// Elementor whose templating bypasses the chosen Woo hook. Each render fn has a
+// static guard, so the footer pass is a no-op once the FAQ is already placed:
+// the configured position always wins when its hook exists, and the footer is
+// pure fallback. 9998 runs just before the FAQPage schema (wp_footer 9999 in
+// functions/psf-schema.php) so footer-rendered items still feed the schema.
+if ($woo_visual_hook !== '') {
+    add_action($woo_visual_hook, 'psf_render_category_faq', 15);
+    psf_debug_log("Registered category FAQ on {$woo_visual_hook}");
 }
+add_action('wp_footer', 'psf_render_category_faq', 9998);
 
 if ($page_visual_hook !== '') {
     add_action($page_visual_hook, 'psf_render_page_faq', 15);
     psf_debug_log("Registered page FAQ on {$page_visual_hook}");
 }
+add_action('wp_footer', 'psf_render_page_faq', 9998);
 
 // Shop page (separate hook because is_shop() is mutually exclusive with is_product_category()).
 add_action('woocommerce_after_shop_loop', 'psf_render_shop_faq', 15);
+add_action('wp_footer', 'psf_render_shop_faq', 9998);
 
 /**
  * Fetch [faqs, heading] for a term or post. Heading falls back to a

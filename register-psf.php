@@ -5,7 +5,7 @@
  * Plugin Name:       Page Specific FAQ
  * Plugin URI:        https://github.com/vigg3/psf
  * Description:       Enables FAQs on product categories and specified pages.
- * Version:           2.1.0
+ * Version:           2.1.1
  * Requires at least: 5.0
  * Requires PHP:      7.4
  * Author:            Viktor Borg
