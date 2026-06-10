@@ -120,33 +120,6 @@ function psf_generate_seo_excerpt($post_id) {
   return implode('. ', $parts);
 }
 
-/**
- * Schema.org FAQPage JSON-LD payload.
- */
-function psf_generate_structured_data($faqs) {
-  if (empty($faqs) || !is_array($faqs)) return [];
-
-  $data = [
-    '@context'   => 'https://schema.org',
-    '@type'      => 'FAQPage',
-    'mainEntity' => [],
-  ];
-
-  foreach ($faqs as $faq) {
-    if (!isset($faq['faqQuestion'], $faq['faqAnswer'])) continue;
-    $q = trim(strip_tags($faq['faqQuestion']));
-    $a = trim(strip_tags($faq['faqAnswer']));
-    if ($q === '' || $a === '') continue;
-
-    $data['mainEntity'][] = [
-      '@type'          => 'Question',
-      'name'           => $q,
-      'acceptedAnswer' => ['@type' => 'Answer', 'text' => $a],
-    ];
-  }
-  return $data;
-}
-
 add_filter('rank_math/frontend/description', 'psf_enhance_meta_description', 10, 2);
 function psf_enhance_meta_description($description, $object_id = null) {
   $description = (string) ($description ?? '');
