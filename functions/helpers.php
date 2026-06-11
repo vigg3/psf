@@ -141,8 +141,3 @@ function psf_ensure_excerpt($excerpt, $post) {
   $faq_excerpt = psf_generate_seo_excerpt($post->ID);
   return $faq_excerpt !== '' ? $faq_excerpt : $excerpt;
 }
-
-add_filter('the_content', 'psf_ensure_content_string', 1);
-function psf_ensure_content_string($content) {
-  return $content === null ? '' : $content;
-}

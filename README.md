@@ -135,6 +135,13 @@ page-specific-faq/
 
 ## Changelog
 
+### 2.1.2 — Unreleased
+
+#### Fixed
+
+-   Critical: the page FAQ callback was registered as an *action* on the `the_content` *filter*; it returned `null`, so WordPress replaced every page's content with nothing, blanking all pages site-wide. `the_content`/`the_excerpt` hooks now get filter callbacks (`psf_append_page_faq_to_content`, `psf_append_category_faq_to_content`) that append the FAQ block and always return the content. Same guard applied to the configurable category hook (`woo_visual_hook`).
+-   Removed the `psf_ensure_content_string` band-aid filter (ran at priority 1, before the broken callback, so it never helped).
+
 ### 2.1.1
 
 -   **Fixed: configured FAQ position is now respected on category pages.** The category FAQ was registered on several WooCommerce hooks at once, so whichever hook fired first in the template won and the `Position` setting was ignored (`woocommerce_archive_description` fires early and hijacked it). It is now registered only on the configured hook, with a single late `wp_footer` fallback (priority 9998) that renders the FAQ only if the chosen hook never fired — covering themes (Flatsome, Hello Elementor) whose templating bypasses standard Woo hooks. The same footer fallback now also applies to page and shop FAQs.
