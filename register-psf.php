@@ -4,7 +4,7 @@
  * @wordpress-plugin
  * Plugin Name:       Page Specific FAQ
  * Description:       Enables FAQs on product categories and specified pages.
- * Version:           2.0.6
+ * Version:           2.0.7
  * Author:            viggebe
  * Author URI:        viktorborg.myportfolio.com
  * License:           GPL-2.0+

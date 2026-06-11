@@ -129,6 +129,13 @@ page-specific-faq/
 
 ## Changelog
 
+### 2.0.7 — Unreleased
+
+#### Fixed
+
+-   Critical: the page FAQ callback was registered as an *action* on the `the_content` *filter*; it returned `null`, so WordPress replaced every page's content with nothing, blanking all pages site-wide. `the_content`/`the_excerpt` hooks now get filter callbacks (`psf_append_page_faq_to_content`, `psf_append_category_faq_to_content`) that append the FAQ block and always return the content.
+-   Removed the `psf_ensure_content_string` band-aid filter (ran at priority 1, before the broken callback, so it never helped).
+
 ### 2.0.5
 
 -   Improved compatibility with WordPress 6.4

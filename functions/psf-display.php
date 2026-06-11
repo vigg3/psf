@@ -13,12 +13,26 @@ if (get_option('hook_rendering_enabled', 'yes') === 'no') {
 $woo_visual_hook  = psf_get_option_safe('woo_visual_hook', 'woocommerce_after_shop_loop');
 $page_visual_hook = psf_get_option_safe('page_visual_hook', 'the_content');
 
+/**
+ * Content FILTERS that WordPress replaces with the callback's return value.
+ * An echo-style action callback on one of these returns null and blanks the
+ * content site-wide — such hooks must get the append-style filter callbacks.
+ */
+function psf_is_content_filter($hook) {
+    return in_array($hook, ['the_content', 'the_excerpt'], true);
+}
+
 // Hello Elementor's templating bypasses normal Woo hooks; fall back to
 // loop_end / get_footer / wp_footer when the user's chosen Woo hook never fires.
 if (get_template() === 'hello-elementor') {
     if ($woo_visual_hook !== '') {
-        add_action($woo_visual_hook, 'psf_render_category_faq', 5);
-        psf_debug_log("Hello Elementor: registered on user hook {$woo_visual_hook} (priority 5)");
+        if (psf_is_content_filter($woo_visual_hook)) {
+            add_filter($woo_visual_hook, 'psf_append_category_faq_to_content', 5);
+            psf_debug_log("Hello Elementor: registered filter {$woo_visual_hook} (priority 5)");
+        } else {
+            add_action($woo_visual_hook, 'psf_render_category_faq', 5);
+            psf_debug_log("Hello Elementor: registered on user hook {$woo_visual_hook} (priority 5)");
+        }
     }
     foreach (['loop_end' => 20, 'get_footer' => 25, 'wp_footer' => 109] as $hook => $priority) {
         add_action($hook, 'psf_render_category_faq', $priority);
@@ -33,15 +47,25 @@ if (get_template() === 'hello-elementor') {
     ];
     foreach ($woo_hooks as $hook => $priority) {
         if (is_string($hook) && $hook !== '') {
-            add_action($hook, 'psf_render_category_faq', $priority);
-            psf_debug_log("Registered FAQ on Woo hook {$hook} (priority {$priority})");
+            if (psf_is_content_filter($hook)) {
+                add_filter($hook, 'psf_append_category_faq_to_content', $priority);
+                psf_debug_log("Registered FAQ filter on {$hook} (priority {$priority})");
+            } else {
+                add_action($hook, 'psf_render_category_faq', $priority);
+                psf_debug_log("Registered FAQ on Woo hook {$hook} (priority {$priority})");
+            }
         }
     }
 }
 
 if ($page_visual_hook !== '') {
-    add_action($page_visual_hook, 'psf_render_page_faq', 15);
-    psf_debug_log("Registered page FAQ on {$page_visual_hook}");
+    if (psf_is_content_filter($page_visual_hook)) {
+        add_filter($page_visual_hook, 'psf_append_page_faq_to_content', 15);
+        psf_debug_log("Registered page FAQ filter on {$page_visual_hook}");
+    } else {
+        add_action($page_visual_hook, 'psf_render_page_faq', 15);
+        psf_debug_log("Registered page FAQ on {$page_visual_hook}");
+    }
 }
 
 // Shop page (separate hook because is_shop() is mutually exclusive with is_product_category()).
@@ -71,22 +95,39 @@ function psf_get_faqs_and_heading($id, $type) {
 }
 
 /**
- * Echo the FAQ block for a term once per request (idempotent across all
- * the redundant hooks in the Woo + Hello Elementor fan-out).
+ * Build the FAQ block for a term once per request (idempotent across all
+ * the redundant hooks in the Woo + Hello Elementor fan-out). Returns ''
+ * when already rendered or no FAQs exist.
  */
-function psf_render_faq_for_term($term_id) {
+function psf_get_faq_markup_for_term($term_id) {
     static $rendered = [];
     if (isset($rendered[$term_id])) {
-        psf_debug_log("FAQ for term {$term_id} already rendered (hook " . current_action() . ')');
-        return;
+        psf_debug_log("FAQ for term {$term_id} already rendered (hook " . current_filter() . ')');
+        return '';
     }
 
     list($faqs, $heading) = psf_get_faqs_and_heading($term_id, 'term');
-    if (empty($faqs) || !is_array($faqs)) return;
+    if (empty($faqs) || !is_array($faqs)) return '';
 
     $rendered[$term_id] = true;
-    psf_debug_log('Rendering FAQ on ' . current_action() . " for term {$term_id}");
-    echo psf_generate_faq_markup($faqs, $heading);
+    psf_debug_log('Rendering FAQ on ' . current_filter() . " for term {$term_id}");
+    return psf_generate_faq_markup($faqs, $heading);
+}
+
+function psf_render_faq_for_term($term_id) {
+    echo psf_get_faq_markup_for_term($term_id);
+}
+
+/**
+ * Filter-safe variant of psf_render_category_faq: APPENDS to the filtered
+ * value instead of echoing, so content-modifying filters keep their input.
+ */
+function psf_append_category_faq_to_content($content) {
+    $content = (string) $content;
+    if (!is_product_category() || !is_main_query()) return $content;
+    $obj = get_queried_object();
+    if (!isset($obj->term_id)) return $content;
+    return $content . psf_get_faq_markup_for_term((int) $obj->term_id);
 }
 
 function psf_render_category_faq() {
@@ -123,6 +164,26 @@ function psf_render_page_faq() {
     $done = true;
     psf_debug_log('Rendering page FAQ on ' . current_action());
     echo psf_generate_faq_markup($faqs, $heading);
+}
+
+/**
+ * Filter-safe variant of psf_render_page_faq for the_content/the_excerpt:
+ * MUST return the (possibly appended) content — returning nothing on these
+ * filters blanks every page site-wide.
+ */
+function psf_append_page_faq_to_content($content) {
+    $content = (string) $content;
+    if (!is_page() || !in_the_loop() || !is_main_query()) return $content;
+
+    static $done = false;
+    if ($done) return $content;
+
+    list($faqs, $heading) = psf_get_faqs_and_heading(get_the_ID(), 'post');
+    if (empty($faqs)) return $content;
+
+    $done = true;
+    psf_debug_log('Appending page FAQ via filter ' . current_filter());
+    return $content . psf_generate_faq_markup($faqs, $heading);
 }
 
 /**
