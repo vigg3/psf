@@ -33,14 +33,15 @@ function psf_generate_faq_markup($psf_faqs, $faq_heading) {
     psf_debug_log('psf_generate_faq_markup: ' . count($psf_faqs) . ' FAQs, heading: ' . $faq_heading);
 
     $className = count($psf_faqs) === 1 ? 'faqContent singleQuestion' : 'faqContent';
-    $jsonld    = psf_generate_structured_data($psf_faqs);
+
+    // Collect these items for the consolidated, page-level FAQPage JSON-LD that
+    // is emitted once on wp_footer (see functions/psf-schema.php). Built from
+    // the same array we render below so schema and HTML can never drift.
+    psf_collect_faq_items($psf_faqs);
 
     ob_start();
 ?>
 <div class="faqWrapper">
-    <?php if (!empty($jsonld['mainEntity'])): ?>
-    <script type="application/ld+json"><?= wp_json_encode($jsonld, JSON_UNESCAPED_UNICODE); ?></script>
-    <?php endif; ?>
     <div class="<?= esc_attr($className); ?>">
         <?php if (!empty($faq_heading)): ?>
         <h2><?php echo esc_html($faq_heading); ?></h2>

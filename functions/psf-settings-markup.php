@@ -77,6 +77,37 @@ function psf_generate_settings_page_markup() {
                     </td>
                 </tr>
 
+                <!-- FAQPage JSON-LD schema -->
+                <tr valign="top">
+                    <th scope="row">
+                        <h3><?php _e('FAQ Schema (JSON-LD)', 'page-specific-faq'); ?></h3>
+                        <?php _e('Output Schema.org FAQPage structured data built from the rendered FAQs.', 'page-specific-faq'); ?>
+                    </th>
+                    <td style="display:flex;gap:16px">
+                        <div class="radio-wrapper">
+                            <input type="radio" id="faqpage_schema_yes" name="faqpage_schema_enabled"
+                                   value="yes"
+                                   <?= ((get_option('faqpage_schema_enabled', 'yes') === 'yes') ? 'checked' : ''); ?>
+                                   style="margin-top:0;margin-right:6px;">
+                            <label for="faqpage_schema_yes"><?php _e('Enabled', 'page-specific-faq'); ?></label>
+                        </div>
+                        <div class="radio-wrapper">
+                            <input type="radio" id="faqpage_schema_no" name="faqpage_schema_enabled"
+                                   value="no"
+                                   <?= ((get_option('faqpage_schema_enabled', 'yes') === 'no') ? 'checked' : ''); ?>
+                                   style="margin-top:0;margin-right:6px;">
+                            <label for="faqpage_schema_no"><?php _e('Disabled', 'page-specific-faq'); ?></label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding-top: 0; padding-left: 0;">
+                        <p class="description">
+                            <?php _e('Emits one consolidated FAQPage JSON-LD block in the footer for the whole page. If you use a page cache (e.g. W3 Total Cache), purge it after changing this.', 'page-specific-faq'); ?>
+                        </p>
+                    </td>
+                </tr>
+
                 <!-- FAQ placement | archives -->
                 <tr valign="top" id="hook_position_setting">
                     <th scope="row">

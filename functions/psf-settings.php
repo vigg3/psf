@@ -63,6 +63,22 @@ function page_specific_faq_settings() {
             'default'           => 'yes'
         )
     );
+    register_setting(
+        PSF_SETTINGS_GROUP,
+        'faqpage_schema_enabled',
+        array(
+            'sanitize_callback' => 'psf_sanitize_yes_no',
+            'default'           => 'yes'
+        )
+    );
+}
+
+/**
+ * Normalise a checkbox-backed yes/no option. Unchecked boxes post nothing, so
+ * a missing value means "no".
+ */
+function psf_sanitize_yes_no($value) {
+    return ($value === 'yes' || $value === '1') ? 'yes' : 'no';
 }
 
 /**

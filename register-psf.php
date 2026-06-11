@@ -3,10 +3,13 @@
 /**
  * @wordpress-plugin
  * Plugin Name:       Page Specific FAQ
+ * Plugin URI:        https://github.com/vigg3/psf
  * Description:       Enables FAQs on product categories and specified pages.
- * Version:           2.0.7
- * Author:            viggebe
- * Author URI:        viktorborg.myportfolio.com
+ * Version:           2.1.2
+ * Requires at least: 5.0
+ * Requires PHP:      7.4
+ * Author:            Viktor Borg
+ * Author URI:        https://github.com/vigg3/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text-Domain:       page-specific-faq
